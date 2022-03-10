@@ -1,7 +1,9 @@
-RaytracingInAWeekend/Images/
+!RaytracingInAWeekend/Images/
+RaytracingInAWeekend/Images/*
 RaytracingInAWeekend/x64/
 x64/Debug/RaytracingInAWeekend.exe
 x64/Debug/RaytracingInAWeekend.pdb
 x64/Release/RaytracingInAWeekend.exe
 x64/Release/RaytracingInAWeekend.pdb
 .vs/
+!RaytracingInAWeekend/Images/placeholder.txt
