@@ -32,9 +32,9 @@ bool IntersectWithSphere(const SceneObject& object, const Ray& ray, double& tMin
 bool IntersectWithBox(const SceneObject& object, const Ray& ray, double& tMin, double& tMax, HitRecord& hitRecord);
 bool IntersectWithPlane(const SceneObject& object, const Ray& ray, double& tMin, double& tMax, HitRecord& hitRecord);
 
-bool IntersectWithXYRect(const SceneObject& object, const Ray& ray, double& tMin, double& tMax, HitRecord& hitRecord);
-bool IntersectWithXZRect(const SceneObject& object, const Ray& ray, double& tMin, double& tMax, HitRecord& hitRecord);
-bool IntersectWithYZRect(const SceneObject& object, const Ray& ray, double& tMin, double& tMax, HitRecord& hitRecord);
+bool IntersectWithXYRect(const SceneObject& object, const Ray& ray, double& tMin, double& tMax, HitRecord& hitRecord, double z);
+bool IntersectWithXZRect(const SceneObject& object, const Ray& ray, double& tMin, double& tMax, HitRecord& hitRecord, double y);
+bool IntersectWithYZRect(const SceneObject& object, const Ray& ray, double& tMin, double& tMax, HitRecord& hitRecord, double x);
 
 inline bool IntersectWithObjectType(const SceneObject& object, const Ray& ray, double& tMin, double& tMax, HitRecord& hitRecord)
 {
@@ -68,8 +68,8 @@ inline AABoundingBox CreateBoundingBoxForObjectType(const SceneObject& object)
     } break;
     case ObjectType::Box:
     {
-        retVal.m_min = Vector3();
-        retVal.m_max = Vector3();
+        retVal.m_min = object.m_position - (object.m_size / 2);
+        retVal.m_max = object.m_position + (object.m_size / 2);
     } break;
     case ObjectType::Plane:
     {
@@ -82,4 +82,16 @@ inline AABoundingBox CreateBoundingBoxForObjectType(const SceneObject& object)
     }
 
     return retVal;
+}
+
+///-----------------------------------------------------------------------------
+///! @brief  Small helper that gives us the collision info we want
+///! @remark inline this when we can
+///-----------------------------------------------------------------------------
+inline void fillOutHitRecord(HitRecord& hitRecord, double t, const Vector3& pointOnXY, const Vector3& normal, const Ray& ray, const SceneObject& object)
+{
+    hitRecord.m_intersectionFactor = t;
+    hitRecord.m_point = pointOnXY;
+    hitRecord.SetSurfaceNormal(ray, normal);
+    hitRecord.m_material = object.m_material;
 }
