@@ -23,15 +23,15 @@
 #pragma comment (lib,"Gdiplus.lib")
 
 
-constexpr size_t image_width = 1280;
-constexpr size_t image_height = 720;
+constexpr size_t image_width = 720;
+constexpr size_t image_height = 360;
 constexpr size_t nrSamples = 256;
 constexpr size_t nrBounces = 25;
 constexpr size_t numberOfWorkerThreads = 15;
 constexpr size_t numberOfTasks = 90;
 
 Vector3 LookAt(0, 1, 0);
-Vector3 camPos(10, 1, 0);
+Vector3 camPos(10, 10, 0);
 Vector3 focusDistance = camPos - LookAt;
 
 GameWindow window;
@@ -42,7 +42,7 @@ std::vector<Vector4> imageArray;
 // Camera
 
 RayTracingCamera cam(camPos, LookAt, Vector3::yAxis(), 20, image_width, image_height, 0.0, 1.0);
-RenderOptions options = RenderOptions(cam, 90);
+RenderOptions options = RenderOptions(90);
 
 void OnKeyDown(WPARAM wParam)
 {
@@ -132,32 +132,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine,
     //Window
     window.createWindow("RaytracerInAWeekend", "TraceMeSomeRays", image_width, image_height, &MessageHandler);
     window.showWindow();
-   
 
-
-    //Scene Setup
-    std::vector<SceneObject> objectList;
-    GenerateScene(objectList);
-
-    BVHVisistStack stack;
-
-    //BoundingVolumeHierarchy bvh(objectList);
-    //options.m_boundingVolume = &bvh;
-    //bvh.WalkBoudingVolume(stack);
-    //options.m_boundingVolume = &bvh;
-
-    //TraceToOuput("--------------------------------------------------------Array Based BVH--------------------------------------------------------\n");
-
-    FastBoundingVolumeHierarchy fbhv(objectList);
-    //fbhv.WalkBoudingVolumeBFS(stack, 0);
-    
-    options.m_fastBVH = &fbhv;
-
-    HitRecord record;
-    fbhv.RayIntersection(Ray(camPos, camPos - Vector3(0, 1, 0)), 0.001, std::numeric_limits<double>::infinity(), record, 0);
-    //return 0;
-    // Render
-    imageArray.resize(image_width * image_height);
 
     //MT Setup
 
@@ -169,6 +144,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine,
     options.m_outputWidth = image_width;
     options.m_aspectRatio = static_cast<double>(image_width) / image_height;
     options.m_outputFileName = ".bmp";
+    options.m_scene.CreateScene(SceneSelection::Boxes);
 
     JobSystem jobSystem(options.m_numberOfWorkerThreads);
     auto& jobQueue = jobSystem.GetJobQueue();
@@ -176,7 +152,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine,
     PixelBlockJobParameters param;
     param.m_pixelArray = &imageArray;
     param.m_renderOptions = &options;
-    param.scene = &objectList;
 
     size_t numberOfJobs = options.m_numberOfTasks;
     if (options.m_outputHeight / options.m_numberOfTasks != 0)
@@ -218,7 +193,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine,
     size_t end = timer.getTimeStamp();
     std::stringstream str;
     str << "Tracing took: " << ConvertTimeDurationToString((end - now) / timer.getResolution()).c_str();
-    str << "Traced against: " << objectList.size() << " number of objects";
+    str << "Traced against: " << options.m_scene.m_scene.size() << " number of objects";
     TraceToOuput(str.str());
 
     double sampleScale = 1.0 / nrSamples;

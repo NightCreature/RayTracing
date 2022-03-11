@@ -1,11 +1,24 @@
 #include "Scene.h"
 
+#include "RenderOptions.h"
 
 ///-----------------------------------------------------------------------------
 ///! @brief   
 ///! @remark
 ///-----------------------------------------------------------------------------
-void RandomSpheres(std::vector<SceneObject>& objectList)
+void Scene::CreateScene(SceneSelection scene)
+{
+    GenerateScene(m_scene, m_camera, scene, *m_renderOptions);
+    m_boundingVolume.InsertNodesBFS(m_scene, 0, m_scene.size(), 0);
+}
+
+
+
+///-----------------------------------------------------------------------------
+///! @brief   
+///! @remark
+///-----------------------------------------------------------------------------
+void RandomSpheres(std::vector<SceneObject>& objectList, RayTracingCamera& cam)
 {
     Material dielectric(Color(1, 1, 1), MaterialType::Dielectric, 0.0, 1.5);
     Material metal(Color(1), MaterialType::Metallic, 0.0);
@@ -63,19 +76,42 @@ void RandomSpheres(std::vector<SceneObject>& objectList)
     //objectList.push_back(SceneObject(Vector3(-1, 0, -1), Vector3(0.5), ObjectType::Sphere, Material(Vector3(0.8, 0.8, 0.8), MaterialType::Dielectric, 0, 1.5)));
     //objectList.push_back(SceneObject(Vector3(-1, 0, -1), Vector3(-0.4), ObjectType::Sphere, Material(Vector3(0.8, 0.8, 0.8), MaterialType::Dielectric, 0, 1.5)));
     //objectList.push_back(SceneObject(Vector3(1, 0, -1), Vector3(0.5), ObjectType::Sphere, Material(Vector3(0.8, 0.6, 0.2), MaterialType::Metallic, 0.00)));
+
+
+    Vector3 LookAt(0, 1, 0);
+    Vector3 camPos(10, 10, 0);
+    cam.CreateCamera(camPos, LookAt, Vector3::yAxis());
+}
+
+void Boxes(std::vector<SceneObject>& objectList, RayTracingCamera& cam)
+{
+    Material metal(Color(1), MaterialType::Metallic);
+    Material lambertian(Color(0.75), MaterialType::Lambertian);
+
+    objectList.emplace_back(SceneObject(Vector3(5, 0, 0), Vector3(0.5), ObjectType::Box, metal));
+    objectList.emplace_back(SceneObject(Vector3(-5, 0, 0), Vector3(0.5), ObjectType::Box, lambertian));
+
+    cam.CreateCamera(Vector3(0, 0, 10), Vector3(0.0), Vector3::yAxis()); //Need render options here
 }
 
 ///-----------------------------------------------------------------------------
 ///! @brief   
 ///! @remark
 ///-----------------------------------------------------------------------------
-void GenerateScene(std::vector<SceneObject>& objectList, SceneSelection scene)
+void GenerateScene(std::vector<SceneObject>& objectList, RayTracingCamera& camera, SceneSelection scene, const RenderOptions& options)
 {
     switch (scene)
     {
     case SceneSelection::RandomSpheres:
-        RandomSpheres(objectList);
+        RandomSpheres(objectList, camera);
         break;
+    case SceneSelection::Boxes:
+    {
+        camera = RayTracingCamera(Vector3(), Vector3(), Vector3::yAxis(), options.m_fov, options.m_outputWidth, options.m_outputHeight, 0, 1); //Need render options here
+        Boxes(objectList, camera);
+    }
+        break;
+
     case SceneSelection::Count:
     default:
         break;
@@ -108,13 +144,4 @@ AABoundingBox GenerateBoundingBoxForList(const std::vector<SceneObject>& objectL
     }
 
     return retVal;
-}
-
-///-----------------------------------------------------------------------------
-///! @brief   
-///! @remark
-///-----------------------------------------------------------------------------
-void Scene::CreateScene(SceneSelection scene)
-{
-    GenerateScene(m_scene, scene);
 }

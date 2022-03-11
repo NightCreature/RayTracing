@@ -7,15 +7,15 @@
 #include <filesystem>
 #include <string>
 #include "Ray.h"
+#include "Scene.h"
 
 struct BoundingVolumeHierarchy;
 struct FastBoundingVolumeHierarchy;
 
 struct RenderOptions
 {
-    RenderOptions(const RayTracingCamera& cam, double fov)
-        : m_cam(cam)
-        , m_aspectRatio(static_cast<double>(m_outputWidth) / static_cast<double>(m_outputHeight))
+    RenderOptions(double fov)
+        : m_aspectRatio(static_cast<double>(m_outputWidth) / static_cast<double>(m_outputHeight))
         , m_fov(fov)
         , m_tanFov(tan(fov/2))
     {}
@@ -24,9 +24,7 @@ struct RenderOptions
 
     std::string m_outputFileName;
 
-    RayTracingCamera m_cam;
-    BoundingVolumeHierarchy* m_boundingVolume;//this is what we really trace against
-    FastBoundingVolumeHierarchy* m_fastBVH;
+    Scene m_scene;
     Matrix44 m_projectionMatrix;
     Matrix44 m_invProjection;
 

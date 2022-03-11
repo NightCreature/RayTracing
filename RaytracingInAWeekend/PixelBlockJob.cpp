@@ -128,8 +128,7 @@ void PixelBlockJob::Execute(size_t threadIndex)
     size_t numberOfRowsToGenerate = m_params.m_endIndex - m_params.m_startIndex;
     //threadLocalArray.resize(width * numberOfRowsToGenerate);
     auto& pixelArrayRef = *(m_params.m_pixelArray);
-    std::vector<SceneObject>& scene = *(m_params.scene);
-    
+    Scene& scene = m_params.m_renderOptions->m_scene;
 
     //std::vector<size_t> pixelTime;
     //pixelTime.resize(width * numberOfRowsToGenerate);
@@ -145,9 +144,9 @@ void PixelBlockJob::Execute(size_t threadIndex)
                 OPTICK_EVENT("Sample Pixel");
                 auto u = double(i + GetRandomValue()) / (m_params.m_renderOptions->m_outputWidth - 1);
                 auto v = double(j + m_params.m_startIndex + GetRandomValue()) / (m_params.m_renderOptions->m_outputHeight - 1);
-                Ray r = m_params.m_renderOptions->m_cam.GetRay(u, v);
+                Ray r = scene.m_camera.GetRay(u, v);
 
-                pixelArrayRef[m_params.m_renderOptions->m_outputWidth * (j + m_params.m_startIndex) + i] += Vector4(RayColorBVHJobBased(r, *m_params.m_renderOptions->m_fastBVH, m_params.m_renderOptions->m_numberOfBounces));
+                pixelArrayRef[m_params.m_renderOptions->m_outputWidth * (j + m_params.m_startIndex) + i] += Vector4(RayColorBVHJobBased(r, scene.m_boundingVolume, m_params.m_renderOptions->m_numberOfBounces));
                 //pixelArrayRef[m_params.m_renderOptions->m_outputWidth * (j + m_params.m_startIndex) + i] += Vector4(RayColorJobBased(r, scene, m_params.m_renderOptions->m_numberOfBounces));
             }
         }

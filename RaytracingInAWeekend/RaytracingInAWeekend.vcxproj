@@ -163,6 +163,7 @@
     <ClCompile Include="Math\vector4.cpp" />
     <ClCompile Include="PixelBlockJob.cpp" />
     <ClCompile Include="Ray.cpp" />
+    <ClCompile Include="RayTracingCamera.cpp" />
     <ClCompile Include="RayTracingFunctions.cpp" />
     <ClCompile Include="RenderOptions.cpp" />
     <ClCompile Include="Scene.cpp" />
@@ -182,6 +183,7 @@
     <ClInclude Include="DXWindow\GameWindow.h" />
     <ClInclude Include="DXWindow\StringHelperFunctions.h" />
     <ClInclude Include="PixelBlockJob.h" />
+    <ClInclude Include="RayTracingCamera.h" />
     <ClInclude Include="RayTracingFunctions.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Threading\Job.h" />
