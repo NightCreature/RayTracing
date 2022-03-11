@@ -5,7 +5,7 @@
 ///! @brief   
 ///! @remark
 ///-----------------------------------------------------------------------------
-void GenerateScene(std::vector<SceneObject>& objectList)
+void RandomSpheres(std::vector<SceneObject>& objectList)
 {
     Material dielectric(Color(1, 1, 1), MaterialType::Dielectric, 0.0, 1.5);
     Material metal(Color(1), MaterialType::Metallic, 0.0);
@@ -24,45 +24,62 @@ void GenerateScene(std::vector<SceneObject>& objectList)
             {
                 Material mat;
 
-                if (choose_mat < 0.8) 
+                if (choose_mat < 0.8)
                 {
                     // diffuse
                     mat.m_type = MaterialType::Lambertian;
                     mat.m_albedo = Color(GetRandomValue(), GetRandomValue(), GetRandomValue()) * Color(GetRandomValue(), GetRandomValue(), GetRandomValue());
                 }
-                else if (choose_mat < 0.95) 
+                else if (choose_mat < 0.95)
                 {
                     // metal
                     mat.m_type = MaterialType::Metallic;
                     mat.m_albedo = Color(GetRandomValueInRange(0.5, 1), GetRandomValueInRange(0.5, 1), GetRandomValueInRange(0.5, 1));
                     mat.m_fuzzyReflection = GetRandomValueInRange(0, 0.5);
                 }
-                else if (choose_mat < 0.98)
+                else //if (choose_mat < 0.98)
                 {
                     // glass
                     mat = dielectric;
                 }
-                else
-                {
-                    //This is a light
-                    mat.m_emitted = Color(200); //Strong white light
-                    TraceToOuput("Added a light!!!!\n");
-                }
+                //else
+                //{
+                //    //This is a light
+                //    mat.m_emitted = Color(200); //Strong white light
+                //    TraceToOuput("Added a light!!!!\n");
+                //}
 
                 objectList.emplace_back(SceneObject(center, Vector3(0.2), ObjectType::Sphere, mat));
             }
         }
     }
 
-    objectList.emplace_back(SceneObject(Vector3(0, 1, 0), Vector3(1), ObjectType::Sphere, metal));
+    objectList.emplace_back(SceneObject(Vector3(0, 1, 0), Vector3(2), ObjectType::Box, lambertian));
     objectList.emplace_back(SceneObject(Vector3(-4, 1, 0), Vector3(1), ObjectType::Sphere, lambertian));
-    objectList.emplace_back(SceneObject(Vector3(4, 1, 0), Vector3(1), ObjectType::Sphere, dielectric));
+    //objectList.emplace_back(SceneObject(Vector3(4, 1, 0), Vector3(1), ObjectType::Box, lambertian));
 
     //objectList.push_back(SceneObject(Vector3(0, -100.5, -1), Vector3(100), ObjectType::Sphere, Material(Color(0.8, 0.8, 0.0), MaterialType::Lambertian)));
     //objectList.push_back(SceneObject(Vector3(0, 0, -1), Vector3(0.5), ObjectType::Sphere, Material(Vector3(1.1, 1.2, 5.5), MaterialType::Lambertian)));
     //objectList.push_back(SceneObject(Vector3(-1, 0, -1), Vector3(0.5), ObjectType::Sphere, Material(Vector3(0.8, 0.8, 0.8), MaterialType::Dielectric, 0, 1.5)));
     //objectList.push_back(SceneObject(Vector3(-1, 0, -1), Vector3(-0.4), ObjectType::Sphere, Material(Vector3(0.8, 0.8, 0.8), MaterialType::Dielectric, 0, 1.5)));
     //objectList.push_back(SceneObject(Vector3(1, 0, -1), Vector3(0.5), ObjectType::Sphere, Material(Vector3(0.8, 0.6, 0.2), MaterialType::Metallic, 0.00)));
+}
+
+///-----------------------------------------------------------------------------
+///! @brief   
+///! @remark
+///-----------------------------------------------------------------------------
+void GenerateScene(std::vector<SceneObject>& objectList, SceneSelection scene)
+{
+    switch (scene)
+    {
+    case SceneSelection::RandomSpheres:
+        RandomSpheres(objectList);
+        break;
+    case SceneSelection::Count:
+    default:
+        break;
+    }
 }
 
 ///-----------------------------------------------------------------------------
@@ -97,7 +114,7 @@ AABoundingBox GenerateBoundingBoxForList(const std::vector<SceneObject>& objectL
 ///! @brief   
 ///! @remark
 ///-----------------------------------------------------------------------------
-void Scene::CreateScene()
+void Scene::CreateScene(SceneSelection scene)
 {
-    GenerateScene(m_scene);
+    GenerateScene(m_scene, scene);
 }
