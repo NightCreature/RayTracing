@@ -23,10 +23,10 @@
 #pragma comment (lib,"Gdiplus.lib")
 
 
-constexpr size_t image_width = 720;
+constexpr size_t image_width = 640;
 constexpr size_t image_height = 360;
-constexpr size_t nrSamples = 256;
-constexpr size_t nrBounces = 25;
+constexpr size_t nrSamples = 64;
+constexpr size_t nrBounces = 1;
 constexpr size_t numberOfWorkerThreads = 15;
 constexpr size_t numberOfTasks = 90;
 
@@ -144,7 +144,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR szCmdLine,
     options.m_outputWidth = image_width;
     options.m_aspectRatio = static_cast<double>(image_width) / image_height;
     options.m_outputFileName = ".bmp";
-    options.m_scene.CreateScene(SceneSelection::Boxes);
+    options.m_scene.CreateScene(SceneSelection::RandomSpheres);
+
+    imageArray.resize(options.m_outputWidth * options.m_outputHeight);
 
     JobSystem jobSystem(options.m_numberOfWorkerThreads);
     auto& jobQueue = jobSystem.GetJobQueue();

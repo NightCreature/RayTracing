@@ -49,7 +49,6 @@ struct BoundingVolumeHierarchyNode
 struct FastBoundingVolumeHierarchy
 {
     FastBoundingVolumeHierarchy() {}
-    FastBoundingVolumeHierarchy(const std::vector<SceneObject>& objectList);
 
     void InsertNodesBFS(const std::vector<SceneObject>& objectList, size_t start, size_t end, size_t currentTreeNodeIndex);
     void WalkBoudingVolumeBFS(BVHVisistStack& output, size_t currentNodeIndex);

@@ -37,7 +37,7 @@ private:
     Vector3 m_vup;
 
     double m_lensRadius = 0.0;
-    double m_fov = m_width / m_height;
+    double m_fov = 90;
     double m_width = 1280.0;
     double m_height = 720.0;
     double m_aperature = 0.0;

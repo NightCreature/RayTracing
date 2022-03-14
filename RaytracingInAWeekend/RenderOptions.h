@@ -18,7 +18,9 @@ struct RenderOptions
         : m_aspectRatio(static_cast<double>(m_outputWidth) / static_cast<double>(m_outputHeight))
         , m_fov(fov)
         , m_tanFov(tan(fov/2))
-    {}
+    {
+        m_scene.m_renderOptions = this;
+    }
 
     void Deserialise(const std::filesystem::path& settingsFilePath);
 

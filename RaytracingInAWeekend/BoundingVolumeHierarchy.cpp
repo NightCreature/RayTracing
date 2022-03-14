@@ -137,19 +137,6 @@ void BoundingVolumeHierarchy::WalkBoudingVolume(BVHVisistStack& output)
     //TraceToOuput(str.str());
 }
 
-///-----------------------------------------------------------------------------
-///! @brief   
-///! @remark
-///-----------------------------------------------------------------------------
-FastBoundingVolumeHierarchy::FastBoundingVolumeHierarchy(const std::vector<SceneObject>& objectList)
-{
-    //Create storage here
-    m_nodes.resize(objectList.size() * 4 + 10); //there are a lot of nodes above you that are your parents since this is a tree with all data at the bottom
-    m_objectList = &objectList;
-    //Start inserting nodes into the storage
-    InsertNodesBFS(objectList, 0, objectList.size(), 0);
-}
-
 //bad shit in here 
 ///-----------------------------------------------------------------------------
 ///! @brief Breadth First Search
@@ -157,6 +144,13 @@ FastBoundingVolumeHierarchy::FastBoundingVolumeHierarchy(const std::vector<Scene
 ///-----------------------------------------------------------------------------
 void FastBoundingVolumeHierarchy::InsertNodesBFS(const std::vector<SceneObject>& objectList, size_t start, size_t end, size_t currentTreeNodeIndex)
 {
+    //Have to do some work when we first start this
+    if (currentTreeNodeIndex == 0)
+    {
+        TraceToOuput("resize node array");
+        m_nodes.resize(objectList.size() * 4 + 10); //there are a lot of nodes above you that are your parents since this is a tree with all data at the bottom
+        m_objectList = &objectList;
+    }
 
     size_t axis = GetRandomUInt(0, 2);
 

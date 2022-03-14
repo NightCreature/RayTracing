@@ -12,8 +12,6 @@ void Scene::CreateScene(SceneSelection scene)
     m_boundingVolume.InsertNodesBFS(m_scene, 0, m_scene.size(), 0);
 }
 
-
-
 ///-----------------------------------------------------------------------------
 ///! @brief   
 ///! @remark
@@ -78,7 +76,7 @@ void RandomSpheres(std::vector<SceneObject>& objectList, RayTracingCamera& cam)
     //objectList.push_back(SceneObject(Vector3(1, 0, -1), Vector3(0.5), ObjectType::Sphere, Material(Vector3(0.8, 0.6, 0.2), MaterialType::Metallic, 0.00)));
 
 
-    Vector3 LookAt(0, 1, 0);
+    Vector3 LookAt(0, 0.0, 0);
     Vector3 camPos(10, 10, 0);
     cam.CreateCamera(camPos, LookAt, Vector3::yAxis());
 }

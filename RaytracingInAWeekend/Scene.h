@@ -27,6 +27,7 @@ struct Scene
     FastBoundingVolumeHierarchy m_boundingVolume;
 
     RenderOptions* m_renderOptions = nullptr;
+    
 };
 
 
